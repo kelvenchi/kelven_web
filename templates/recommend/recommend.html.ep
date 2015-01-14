@@ -1,0 +1,116 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare(qq{select * from Recommend});
+% $sth->execute;
+% my @prodts = $sth->fetchrow_array();
+% $_ = decode 'utf8', $_ for @prodts;
+% $sth->finish;
+% $dbh->disconnect;
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>产品推荐</h3>
+      <div class="Index">
+        <div>
+          <div class="Title" id="TableTitle">
+            <div class="container" style="margin-left:0;padding-left:0">
+              <div class="page-header">
+                <h4>显示在“产品中心”第一页的推荐产品</h4>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐一</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt1" placeholder="图片地址" value="<%= $prodts[0] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐二</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt2" placeholder="图片地址" value="<%= $prodts[1] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐三</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt3" placeholder="图片地址" value="<%= $prodts[2] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐四</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt4" placeholder="图片地址" value="<%= $prodts[3] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐五</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt5" placeholder="图片地址" value="<%= $prodts[4] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐六</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt6" placeholder="图片地址" value="<%= $prodts[5] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐七</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt7" placeholder="图片地址" value="<%= $prodts[6] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-bottom: 10px">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">推荐八</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" name="pdt8" placeholder="图片地址" value="<%= $prodts[7] %>">
+                    %= input_tag modify => "更新", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => 'sm1()';
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+      });
+      function sm1() {
+        document.getElementById("big-form").action='/recommend/update';
+        document.getElementById("big-form").submit();
+      }
+      function sm4() {
+        document.getElementById("big-form").action='/articlemgmt/logout';
+        document.getElementById("big-form").submit();
+      }
+  </script>

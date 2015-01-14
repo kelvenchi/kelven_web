@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>湖北明磊传动轴有限公司</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media querie -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <div id="AdminNav">
+    <ul>
+      <li><a href="#"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;hbml.cn</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新建文章</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;顾客留言</a></li>
+      <li class="user"><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Admin 你好</a></li>
+    </ul>
+  </div>
+  <div id="AdminSidebar">
+    <ul>
+      <li><a href="#"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;首页管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;文章管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;&nbsp;分类管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-picture"></span>&nbsp;&nbsp;图片管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;链接管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;用户管理</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;网站设置</a></li>
+    </ul>
+  </div>
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>文章管理<a href="#" class="operator">新建</a></h3>
+      <div class="Index">
+        <form action="">
+          <div class="Statistics">
+            <div id="sitem">全部<span class="badge">69</span></div>
+            <div id="fitem">
+              <input type="text" id="search" placeholder="Search" id="SearchBox" class="form-control"></input>
+              <input type="submit" value="搜索" class="btn btn-default"></input>
+            </div>
+            <div class="ml-clear"></div>
+          </div>
+          <div class="Title" id="TableTitle">
+            <div id="Submit">
+              <select id="item-apply" class="form-control">
+                <option value="all">批量操作</option>
+                <option value="edit">重新发布</option>
+                <option value="edit">更改分类</option>
+                <option value="remove">删除</option>
+              </select>
+              <input type="submit" value="应用" class="btn btn-default">
+            </div>
+            <div>
+              <select id="item-filter" class="form-control">
+                <option value="all">全部日期</option>
+                <option value="20141028">2014年10月28日</option>
+              </select>
+              <select id="item-filter" class="form-control">
+                <option value="all">全部分类</option>
+                <option value="20141028">联轴器</option>
+              </select>
+              <input type="submit" value="筛选" class="btn btn-default"></input>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+          <div class="Table" id="TableBody">
+            <table>
+              <thead>
+                <tr id="t_title">
+                  <th class="column-check"><input type="checkbox"></input></th>
+                  <th class="column-title">标题</th>
+                  <th class="column-author">作者</th>
+                  <th class="column-date">日期</th>
+                  <th class="column-content">分类目录</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr id="t_foot">
+                  <th class="column-check"><input type="checkbox"></input></th>
+                  <th class="column-title">标题</th>
+                  <th class="column-author">作者</th>
+                  <th class="column-date">日期</th>
+                  <th class="column-content">分类目录</th>
+                </tr>
+              </tfoot>
+              <tbody>
+                <tr>
+                  <td class="check-cell">
+                    <input type="checkbox"></input>
+                  </td>
+                  <td>
+                    <a href="#"><strong>CSS基准</strong></a>
+                    <p>在body标签中定义的样式将被所有的的选择器继承， 除非你显示改变某个选择器中的样式。 比如 默认的line- […]</p>
+                    <small><a href="#">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">删除</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">查看</a></small>
+                  </td>
+                  <td>Admin</td>
+                  <td>2014年10月30日</td>
+                  <td>分类目录</td>
+                </tr>
+                <tr>
+                  <td class="check-cell">
+                    <input type="checkbox"></input>
+                  </td>
+                  <td>
+                    <a href="#"><strong>CSS基准</strong></a>
+                    <p>在body标签中定义的样式将被所有的的选择器继承， 除非你显示改变某个选择器中的样式。 比如 默认的line- […]</p>
+                    <small><a href="#">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">删除</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">查看</a></small>
+                  </td>
+                  <td>Admin</td>
+                  <td>2014年10月30日</td>
+                  <td>分类目录</td>
+                </tr>
+                <tr>
+                  <td class="check-cell">
+                    <input type="checkbox"></input>
+                  </td>
+                  <td>
+                    <a href="#"><strong>CSS基准</strong></a>
+                    <p>在body标签中定义的样式将被所有的的选择器继承， 除非你显示改变某个选择器中的样式。 比如 默认的line- […]</p>
+                    <small><a href="#">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">删除</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">查看</a></small>
+                  </td>
+                  <td>Admin</td>
+                  <td>2014年10月30日</td>
+                  <td>分类目录</td>
+                </tr>
+                <tr>
+                  <td class="check-cell">
+                    <input type="checkbox"></input>
+                  </td>
+                  <td>
+                    <a href="#"><strong>CSS基准</strong></a>
+                    <p>在body标签中定义的样式将被所有的的选择器继承， 除非你显示改变某个选择器中的样式。 比如 默认的line- […]</p>
+                    <small><a href="#">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">删除</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">查看</a></small>
+                  </td>
+                  <td>Admin</td>
+                  <td>2014年10月30日</td>
+                  <td>分类目录</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="ml-clear"></div>
+
+  <!-- Includes Script -->
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="../bootstrap/js/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8">
+    jQuery(function(){
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+        $("tbody tr:odd").css("background-color", "#f9f9f9");
+      });
+    });
+  </script>
+
+</body>
+</html>

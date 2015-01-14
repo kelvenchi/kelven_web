@@ -1,0 +1,52 @@
+<!-- render starting ... -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>湖北明磊传动轴有限公司</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <!-- summernote -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link href="/bootstrap/summernote/summernote.css" rel="stylesheet">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media querie -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <form id="big-form" method='post' enctype="multipart/form-data">
+  <div id="AdminNav">
+    <ul>
+      <li><a href="/admin/index"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;hbml.cn</a></li>
+      <li><a href="/admin/add"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新建文章</a></li>
+      <li><a href="/category/add"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新建分类</a></li>
+      <li><a href="/image/index"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;上传图片</a></li>
+      <li class="user"><a href="#" onclick="sm4()"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<%= $admin %> 你好</a></li>
+    </ul>
+  </div>
+  <div id="AdminSidebar">
+    <ul>
+      <li><a href="/index/index"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;首页管理</a></li>
+      <li><a href="/admin/index"><span class="glyphicon glyphicon-book"></span>&nbsp;&nbsp;文章管理</a></li>
+      <li><a href="/category/index"><span class="glyphicon glyphicon-folder-close"></span>&nbsp;&nbsp;分类管理</a></li>
+      <li><a href="/image/index"><span class="glyphicon glyphicon-picture"></span>&nbsp;&nbsp;图片管理</a></li>
+      <li><a href="/recommend/index"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;&nbsp;推荐产品</a></li>
+      <li><a href="/site/index"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;用户管理</a></li>
+    </ul>
+  </div>
+
+  <div class="ml-clear"></div>
+  <%= content %>
+  </form>
+</body>
+</html>

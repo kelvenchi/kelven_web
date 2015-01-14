@@ -1,0 +1,320 @@
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.ml-clear {
+  clear: both;
+}
+
+.rowbg {
+  background-color: #f1f1f1;
+}
+
+.container {
+  margin-top: 10px;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.AdminBody {
+  margin: 10px 20px 10px 20px;
+}
+.AdminBody h3 {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.AdminBody .operator {
+  position: relative;
+  top: -2.5px;
+  margin-left: 10px;
+  line-height: 28px;
+  font-size: 14px;
+  text-align: center;
+  display: inline-block;
+  background-color: #e0e0e0;
+  text-decoration: none;
+  padding-left: 5px;
+  padding-right: 5px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+.AdminBody .operator:hover {
+  color: white;
+  background-color: #543f6d;
+}
+.AdminBody .note-editor {
+  margin-top: 10px;
+  background-color: white;
+  margint-right: 10px;
+}
+.AdminBody .Index div {
+  display: block;
+}
+.AdminBody .Index div .btn:hover {
+  color: white;
+  background-color: #543f6d;
+}
+.AdminBody .Index div .form-control {
+  display: inline-block;
+}
+.AdminBody .Index div .Statistics div#sitem {
+  float: left;
+  line-height: 34px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Statistics div#sitem span {
+  margin-left: 5px;
+  position: relative;
+  top: -1.5px;
+}
+.AdminBody .Index div .Statistics div#fitem {
+  float: right;
+}
+.AdminBody .Index div .Statistics input#search {
+  width: 300px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title {
+  margin-top: 10px;
+}
+.AdminBody .Index div .Title div#Submit {
+  float: left;
+}
+.AdminBody .Index div .Title input {
+  float: left;
+  margin-right: 20px;
+}
+.AdminBody .Index div .Title div {
+  margin-right: 20px;
+}
+.AdminBody .Index div .Title div select {
+  padding-left: 10px;
+}
+.AdminBody .Index div .Title div select option {
+  padding-left: 10px;
+}
+.AdminBody .Index div .Title div select#item-apply {
+  width: 110px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title div select#model {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title div select#category {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title div select#item-filter {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title div select#subcategory {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Title div select#aritcle {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+.AdminBody .Index div .Table * {
+  word-wrap: break-word;
+}
+.AdminBody .Index div .Table table {
+  display: block;
+  border: 1px solid #e5e5e5;
+  background-color: white;
+  margin-top: 10px;
+}
+.AdminBody .Index div .Table table .column-check {
+  padding-top: 12px;
+  width: 2%;
+}
+.AdminBody .Index div .Table table .column-title {
+  width: 40%;
+}
+.AdminBody .Index div .Table table .column-author {
+  width: 20%;
+}
+.AdminBody .Index div .Table table .colmun-date {
+  width: 20%;
+}
+.AdminBody .Index div .Table table .column-content {
+  width: 10%;
+}
+.AdminBody .Index div .Table table .column-check {
+  padding-top: 12px;
+  width: 2%;
+}
+.AdminBody .Index div .Table table .column-1 {
+  width: 20%;
+}
+.AdminBody .Index div .Table table .column-2 {
+  width: 30%;
+}
+.AdminBody .Index div .Table table .colmun-3 {
+  width: 20%;
+}
+.AdminBody .Index div .Table table tr#t_title {
+  width: auto;
+  border-bottom: 1px solid #e1e1e1;
+}
+.AdminBody .Index div .Table table tr#t_foot {
+  border-top: 1px solid #e1e1e1;
+}
+.AdminBody .Index div .Table table thead {
+  font-weight: normal;
+}
+.AdminBody .Index div .Table table thead th {
+  padding: 8px 10px 8px 10px;
+}
+.AdminBody .Index div .Table table tbody td.check-cell {
+  text-align: left;
+  vertical-align: top;
+  padding-top: 10px;
+}
+.AdminBody .Index div .Table table tbody td {
+  height: 108px;
+  padding: 8px 10px 8px 10px;
+}
+.AdminBody .Index div .Table table tbody td a {
+  text-decoration: none;
+}
+.AdminBody .Index div .Table table tfoot th {
+  padding: 8px 10px 8px 10px;
+}
+
+#AdminNav {
+  color: white;
+  line-height: 2em;
+  background-color: #543f6d;
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+}
+#AdminNav .user {
+  float: right;
+}
+#AdminNav ul {
+  list-style-type: none;
+}
+#AdminNav ul li {
+  font-size: 1em;
+  text-align: left;
+  float: left;
+}
+#AdminNav ul li a {
+  display: inline-block;
+  color: white;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+  background-color: #543f6d;
+}
+#AdminNav ul li a:hover {
+  background-color: #a2b745;
+}
+
+#AdminSidebar {
+  color: white;
+  line-height: 2em;
+  background-color: #543f6d;
+  position: fixed;
+  top: 38px;
+  bottom: 0;
+  z-index: 1000;
+  float: left;
+}
+#AdminSidebar ul {
+  list-style-type: none;
+}
+#AdminSidebar ul li {
+  text-align: left;
+}
+#AdminSidebar ul li a {
+  font-size: 1.2em;
+  min-width: 130px;
+  padding: 5px 0 5px 10px;
+  color: white;
+  display: inline-block;
+  text-decoration: none;
+  background-color: #543f6d;
+}
+#AdminSidebar ul li a:hover {
+  background-color: #a3b745;
+}
+
+#AdminContent {
+  background-color: #f1f1f1;
+  overflow: hidden;
+  position: relative;
+  top: 38px;
+  left: 130px;
+  float: left;
+}
+
+#title {
+  margin-top: 10px;
+  width: 60%;
+}
+
+.publish {
+  margin-top: 10px;
+}
+
+.subsmall {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.main_opt {
+  padding-left: 10px;
+}
+.main_opt option {
+  padding-left: 10px;
+}
+
+.btn_addPic {
+  display: inline-block;
+  position: relative;
+  height: 34px;
+  overflow: hidden;
+  padding: 0 10px;
+  border: 1px solid #EBEBEB;
+  background: none repeat scroll 0 0 #F3F3F3;
+  color: #999999;
+  font: 14px/34px 'MicroSoft Yahei','Simhei';
+  cursor: pointer;
+  text-align: center;
+}
+
+.filePrew {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 39px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0;
+  -khtml-opacity: 0;
+  opacity: 0;
+}
+
+/*# sourceMappingURL=admin.css.map */

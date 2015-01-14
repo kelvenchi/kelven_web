@@ -1,0 +1,138 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $cou = $dbh->prepare("SELECT COUNT(*) FROM Articles;");
+% my $sth = $dbh->prepare(qq{SHOW TABLE STATUS LIKE 'Articles'});
+% my $sth3 = $dbh->prepare("SELECT name FROM Category;");
+% my $sth4 = $dbh->prepare("SELECT name FROM Subcategory;");
+% $cou->execute();
+% $sth->execute();
+% $sth3->execute();
+% $sth4->execute();
+% my $count = $cou->fetchrow_arrayref();
+% my @id_max = $sth->fetchrow_array();
+% my $row3 = $sth3->fetchall_arrayref();
+% my $row4 = $sth4->fetchall_arrayref();
+% $cou->finish;
+% $sth->finish;
+% $sth3->finish;
+% $sth4->finish;
+% $dbh->disconnect;
+% session id_max => "$id_max[10]";
+% for (@{$row3}, @{$row4}) {
+%   for my $this (@{$_}) {
+%     $this = decode 'utf8', $this;
+%   }
+% }
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>文章管理<a href="/admin/add" class="operator">新建</a></h3>
+      <div class="Index">
+        <div>
+          <div class="Statistics">
+            <div id="sitem">全部<span class="badge"><%= $count->[0] %></span></div>
+            <div id="fitem">
+              <input name="search-content" type="text" id="search" placeholder="Search" id="SearchBox" class="form-control"></input>
+              <input type="submit" value="搜索" class="btn btn-default"></input>
+            </div>
+            <div class="ml-clear"></div>
+          </div>
+          <div class="Title" id="TableTitle">
+            <div>
+              <select id="item-filter" name="category" class="form-control">
+                <option value="">主分类</option>
+                % for (@{$row3}) {
+                <option value="<%= $_->[0] %>"><%= $_->[0] %></option>
+                % }
+              </select>
+              <select id="subcategory" name="subcategory" class="form-control">
+              </select>
+              <select id="model" name="model" class="form-control">
+                <option value="">请选择模板</option>
+                <option value="c">普通文章</option>
+                <option value="l">文章列表</option>
+                <option value="s">单页图片集</option>
+                <option value="i">分类图片集</option>
+                <option value="ic">分类图片集文章</option>
+              </select>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+          <div class="Table" id="TableBody">
+            %= text_field title => '', id => 'title', class=>"form-control", placeholder=>'标题';
+          </div>
+        </div>
+      </div>
+      %= text_area content => '', id => 'summernote', cols => '40';
+      %= input_tag button => '发布', id => 'publish', class => 'btn btn-primary', type => 'submit';
+    </div>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/bootstrap/summernote/summernote.min.js"></script>
+  <script src="/bootstrap/summernote/lang/summernote-zh-CN.js"></script>
+
+  <script>
+    function sm1() {
+      document.getElementById("big-form").action='/articlemgmt/insert';
+      document.getElementById("big-form").submit();
+    }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      var totalx = document.documentElement.clientWidth;
+      var totaly = document.documentElement.clientHeight;
+      var sidebarWidth = totalx - 130;
+      var sidebarHeight = totaly - 38;
+      document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+      document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+      $(document).ready(function(){
+        $('#summernote').summernote({
+          //toolbar: [
+          //  ['style', ['style',]],
+          //  ['common', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear',]],
+          //  ['fontsize', ['fontsize',]],
+          //  ['color', ['color']],
+          //  ['para', ['ul', 'ol', 'paragraph']],
+          //  ['height', ['height']],
+          //  ['insert', ['link', 'picture', 'video', 'table',]],
+          //  ['undo', ['undo', 'redo']],
+          //  ['code', ['code']],
+          //],
+          lang: 'zh-CN',
+          height: 400,
+          minHeight: 400,             // set minimum height of editor
+          maxHeight: null,             // set maximum height of editor
+          focus: true,                 // set focus to editable area after initializing summernote
+        });
+        $('#publish').click(function(e){
+          e.preventDefault();
+          $('textarea[name="content"]').html($('#summernote').code());
+          sm1();
+        });
+        $('#item-filter').change(function(){
+          var id = $(this).val();
+          $.ajax({
+            type: "POST",
+            url:  "/ajax/subc",
+            data: {name: id},
+            dataType: "json",
+            success: function(data){
+              var option = '<option value=""></option>';
+              $.each(data, function(index, entry){
+                option += '<option value="' + entry.name + '">' + entry.name + '</option>';
+              });
+              $('#subcategory').empty();
+              $('#subcategory').html(option);
+            }
+          });
+        });
+      });
+  </script>
+
+  </div>

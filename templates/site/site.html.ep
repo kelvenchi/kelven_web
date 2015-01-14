@@ -1,0 +1,344 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare(qq{select user from Users});
+% $sth->execute;
+% my $users = $sth->fetchall_arrayref();
+% $sth->finish;
+% for (@{$users}) {
+%   $_->[0] = decode 'utf8', $_->[0];
+% }
+% $dbh->disconnect;
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>用户管理</h3>
+      <div class="Index">
+        <div>
+          <div class="Title" id="TableTitle">
+            <div class="container" style="margin-left:0;padding-left:0">
+              <div class="page-header">
+                <h4>新建用户</h4>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <label for="username" class="col-sm-1 control-label" style="position:relative;top:7px;">用户名</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="用户名" value="">
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert4'></div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="password" class="col-sm-1 control-label" style="position:relative;top:7px;">输入密码</label>
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="密码" value="">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="password_again" class="col-sm-1 control-label" style="position:relative;top:7px;">再次输入密码</label>
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" id="password_again" name = "password_again" placeholder="再次输入密码" value="">
+                    %= input_tag modify => "注册", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;',id => 'smt';
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert'>
+                    两次输入密码不一致
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert2'>
+                    密码不能为空
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert3'>
+                    密码不能少于7位
+                  </div>
+                </div>
+              </div>
+              <div class="page-header">
+                <h4>删除用户</h4>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="deluser" class="col-sm-1 control-label" style="position:relative;top:7px;">选择用户</label>
+                  <div class="col-sm-5">
+                    <select class="form-control" id="deluser" name = "deluser">
+                      % for (@{$users}) {
+                      <option value="<%= $_->[0] %>"><%= $_->[0] %></option>
+                      % }
+                    </select>
+                    %= input_tag modify => "删除", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;',id => 'smt2';
+                  </div>
+                </div>
+              </div>
+              <div class="page-header">
+                <h4>更改用户密码</h4>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <label for="edituser" class="col-sm-1 control-label" style="position:relative;top:7px;">选择用户</label>
+                  <div class="col-sm-5">
+                    <select class="form-control" id="edituser" name = "edituser">
+                      % for (@{$users}) {
+                      <option value="<%= $_->[0] %>"><%= $_->[0] %></option>
+                      % }
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="password_o" class="col-sm-1 control-label" style="position:relative;top:7px;">旧密码</label>
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" id="password_o" name="password_o" placeholder="密码" value="">
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert_o'></div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="password_e" class="col-sm-1 control-label" style="position:relative;top:7px;">新密码</label>
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" id="password_e" name="password_e" placeholder="密码" value="">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="password_again_e" class="col-sm-1 control-label" style="position:relative;top:7px;">新密码</label>
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" id="password_again_e" name = "password_again_e" placeholder="再次输入密码" value="">
+                    %= input_tag modify => "编辑", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;',id => 'smt3';
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert_e'>
+                    两次输入密码不一致
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert2_e'>
+                    密码不能为空
+                  </div>
+                  <div class="col-sm-2" style="display: none;position:relative;top:7px;" id = 'alert3_e'>
+                    密码不能少于7位
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id ="curuser" style="display:none"><%= $curuser %></div>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/jQuery-md5.js"></script>
+
+  <script>
+      $(document).ready(function(){
+        var user = $('#username').prop('value');
+        var curuser = $('#curuser').text();
+        $.ajax({
+          type: "POST",
+          url:  "/ajax/ucheck",
+          data: {username: user},
+          dataType: "json",
+          success: function(data){
+            $.each(data, function(index, entry){
+              if (entry.name != '') {
+                $('#alert4').empty();
+                $('#alert4').html(entry.name + " 已经注册, 请选择别的名称");
+                $('#alert4').css('color', 'red');
+                $('#alert4').css('display', 'block');
+              } else {
+                $('#alert4').empty();
+                $('#alert4').css('display', 'none');
+              }
+            });
+          }
+        });
+        $('#smt').click(function(e){
+          e.preventDefault();
+          if (curuser == 'minglei' || curuser == 'kelven') {
+            var user = $('#username').prop('value');
+            var rgst = $('#alert4').text();
+            var pass = $('#password').prop('value');
+            var pass_a = $('#password_again').prop('value');
+            if (pass != pass_a) {
+              $('#alert').css('display', 'block');
+              $('#alert').css('color', 'red');
+            } else if (pass == '' && pass_a == '') {
+              $('#alert2').css('display', 'block');
+              $('#alert2').css('color', 'red');
+            } else if (pass.length < 7 || pass_a.length < 7) {
+              $('#alert3').css('display', 'block');
+              $('#alert3').css('color', 'red');
+            } else if (pass == pass_a && user != '' && rgst == '') {
+              var password = $.md5($('#password').val());
+              $('#password').val(password);
+              $('#alert').css('display', 'none');
+              $('#alert2').css('display', 'none');
+              $('#alert3').css('display', 'none');
+              document.getElementById("big-form").action='/site/adduser';
+              document.getElementById("big-form").submit();
+            }
+            if (user == '') {
+              $('#alert4').text('用户名不能为空');
+              $('#alert4').css('display', 'block');
+              $('#alert4').css('color', 'red');
+            }
+          }
+        });
+        $('#password_again, #password').blur(function(){
+          var pass = $('#password').prop('value');
+          var pass_a = $('#password_again').prop('value');
+          if (pass != pass_a) {
+            $('#alert').css('display', 'block');
+            $('#alert').css('color', 'red');
+            $('#alert2').css('display', 'none');
+            $('#alert3').css('display', 'none');
+          } else if (pass == '' && pass_a == '') {
+            $('#alert2').css('display', 'block');
+            $('#alert2').css('color', 'red');
+            $('#alert').css('display', 'none');
+            $('#alert3').css('display', 'none');
+          } else if (pass.length < 7 || pass_a.length < 7) {
+            $('#alert3').css('display', 'block');
+            $('#alert3').css('color', 'red');
+            $('#alert').css('display', 'none');
+            $('#alert2').css('display', 'none');
+          } else if (pass == pass_a) {
+            $('#alert').css('display', 'none');
+            $('#alert2').css('display', 'none');
+            $('#alert3').css('display', 'none');
+          }
+        });
+        $('#username').blur(function(){
+          var user = $('#username').prop('value');
+          if (user == '') {
+            $('#alert4').text('用户名不能为空');
+            $('#alert4').css('display', 'block');
+            $('#alert4').css('color', 'red');
+          } else {
+            $.ajax({
+              type: "POST",
+              url:  "/ajax/ucheck",
+              data: {username: user},
+              dataType: "json",
+              success: function(data){
+                $.each(data, function(index, entry){
+                  if (entry.name != '') {
+                    $('#alert4').empty();
+                    $('#alert4').html(entry.name + " 已经注册, 请选择别的名称");
+                    $('#alert4').css('color', 'red');
+                    $('#alert4').css('display', 'block');
+                  } else {
+                    $('#alert4').empty();
+                    $('#alert4').css('display', 'none');
+                  }
+                });
+              }
+            });
+          }
+        });
+        $('#smt2').click(function(e){
+          e.preventDefault();
+          if (curuser == 'minglei' || curuser == 'kelven') {
+            document.getElementById("big-form").action='/site/deluser';
+            document.getElementById("big-form").submit();
+          }
+        });
+        $('#smt3').click(function(e){
+          e.preventDefault();
+          var pass = $('#password_e').prop('value');
+          var pass_a = $('#password_again_e').prop('value');
+          var user = $('#edituser').prop('value');
+          var pass_o2 = $('#password_o').prop('value');
+          var pass_o = $('#alert_o').text();
+          if (pass != pass_a) {
+            $('#alert_e').css('display', 'block');
+            $('#alert_e').css('color', 'red');
+          } else if (pass == '' && pass_a == '') {
+            $('#alert2_e').css('display', 'block');
+            $('#alert2_e').css('color', 'red');
+          } else if (pass.length < 7 || pass_a.length < 7) {
+            $('#alert3_e').css('display', 'block');
+            $('#alert3_e').css('color', 'red');
+          } else if (pass == pass_a && pass_o == '' && pass_o2 != '') {
+            $('#alert_e').css('display', 'none');
+            $('#alert2_e').css('display', 'none');
+            $('#alert3_e').css('display', 'none');
+            var password = $.md5($('#password_e').val());
+            $('#password_e').val(password);
+            document.getElementById("big-form").action='/site/edituser';
+            document.getElementById("big-form").submit();
+          }
+        });
+        $('#password_again_e, #password_e').blur(function(){
+          var pass = $('#password_e').prop('value');
+          var pass_a = $('#password_again_e').prop('value');
+          if (pass != pass_a) {
+            $('#alert_e').css('display', 'block');
+            $('#alert_e').css('color', 'red');
+            $('#alert2_e').css('display', 'none');
+            $('#alert3_e').css('display', 'none');
+          } else if (pass == '' && pass_a == '') {
+            $('#alert2_e').css('display', 'block');
+            $('#alert2_e').css('color', 'red');
+            $('#alert_e').css('display', 'none');
+            $('#alert3_e').css('display', 'none');
+          } else if (pass.length < 7 || pass_a.length < 7) {
+            $('#alert3_e').css('display', 'block');
+            $('#alert3_e').css('color', 'red');
+            $('#alert_e').css('display', 'none');
+            $('#alert2_e').css('display', 'none');
+          } else if (pass == pass_a) {
+            $('#alert_e').css('display', 'none');
+            $('#alert2_e').css('display', 'none');
+            $('#alert3_e').css('display', 'none');
+          }
+        });
+        $('#password_o').blur(function(){
+          var user = $('#edituser').prop('value');
+          var pass = $('#password_o').prop('value');
+          $.ajax({
+            type: "POST",
+            url:  "/ajax/pcheck",
+            data: {password: $.md5(pass), username: user},
+            dataType: "json",
+            success: function(data){
+              $.each(data, function(index, entry){
+                if (entry.name == '') {
+                  $('#alert_o').empty();
+                  $('#alert_o').html('密码错误');
+                  $('#alert_o').css('color', 'red');
+                  $('#alert_o').css('display', 'block');
+                } else {
+                  $('#alert_o').empty();
+                  $('#alert_o').css('display', 'none');
+                }
+              });
+            }
+          });
+        });
+      });
+      function sm4() {
+        document.getElementById("big-form").action='/articlemgmt/logout';
+        document.getElementById("big-form").submit();
+      }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+      });
+  </script>

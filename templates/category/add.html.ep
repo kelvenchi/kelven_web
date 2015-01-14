@@ -1,0 +1,163 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $category = $dbh->prepare("SELECT * FROM Category;");
+% my $subcategory = $dbh->prepare("SELECT * FROM Subcategory;");
+% my $cou = $dbh->prepare("SELECT COUNT(*) FROM Category;");
+% my $cou2 = $dbh->prepare("SELECT COUNT(*) FROM Subcategory;");
+% $category->execute();
+% $subcategory->execute();
+% $cou->execute();
+% $cou2->execute();
+% my $row = $category->fetchall_arrayref();
+% my $row2 = $subcategory->fetchall_arrayref();
+% my $count = $cou->fetchrow_arrayref();
+% my $count2 = $cou2->fetchrow_arrayref();
+% $category->finish;
+% $subcategory->finish;
+% $cou->finish;
+% $cou2->finish;
+% $dbh->disconnect;
+% session category => [map {$_->[1]} @{$row}];
+% session subcategory => [map {$_->[1]} @{$row2}];
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>分类管理<a href="/category/add" class="operator">新建</a></h3>
+      <div class="Index">
+        <div>
+          <div class="Statistics">
+            <div id="sitem">主分类<span class="badge"><%= $count->[0] %></span></div>
+            <div id="sitem">二级分类<span class="badge"><%= $count2->[0] %></span></div>
+            <div id="fitem">
+              <input name="search-content" type="text" id="search" placeholder="Search" id="SearchBox" class="form-control"></input>
+              <input type="submit" value="搜索" class="btn btn-default"></input>
+            </div>
+            <div class="ml-clear"></div>
+          </div>
+          <div class="Title" id="TableTitle">
+          </div>
+          <div class="ml-clear"></div>
+          <div class="Table" id="TableBody">
+            <table>
+              <thead>
+                <tr id="t_title">
+                  <th class="column-1">分类</th>
+                  <th class="column-2"></th>
+                  <th class="column-3"></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr id="t_foot">
+                  <th>分类</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+              <tbody>
+                <tr>
+                  <td>新建主分类</td>
+                  <td>
+                    <select name="aa" class="form-control main_opt" style="visibility:hidden">
+                      <option value="">选择主分类</option>
+                      % for (@{$row}) {
+                      <option value="<%= $_->[0] %>"><%= decode 'utf8', $_->[1] %></option>
+                      % }
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" name='category_name' value='' placeholder = '分类名称' class="form-control"></input>
+                  </td>
+                  <td>
+                    <input type="text" name='category_desc' value='' placeholder = '分类描述' class="form-control"></input>
+                  </td>
+                  <td>
+                    <input type="submit" name='add_category' value='新建' class="form-control" onclick="sm1()"></input>
+                  </td>
+                </tr>
+                <tr>
+                  <td>新建二级分类</td>
+                  <td>
+                    <select name="category" class="form-control main_opt">
+                      <option value="">选择主分类</option>
+                      % for (@{$row}) {
+                      <option value="<%= $_->[0] %>"><%= decode 'utf8', $_->[1] %></option>
+                      % }
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" name='subcategory_name' value='' placeholder = '分类名称' class="form-control"></input>
+                  </td>
+                  <td>
+                    <input type="text" name='subcategory_desc' value='' placeholder = '分类描述' class="form-control"></input>
+                  </td>
+                  <td>
+                    <input type="submit" name='add_subcategory' value='新建' class="form-control" onclick="sm2()"></input>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script>
+    function sm1() {
+      document.getElementById("big-form").action='/category/add_pri';
+      document.getElementById("big-form").submit();
+    }
+    function sm2() {
+      document.getElementById("big-form").action='/category/add_sub';
+      document.getElementById("big-form").submit();
+    }
+    function sm3() {
+      document.getElementById("big-form").action='/category/search';
+      document.getElementById("big-form").submit();
+    }
+    function sm4() {
+      document.getElementById("big-form").action='/articlemgmt/logout';
+      document.getElementById("big-form").submit();
+    }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+        $("tbody tr:odd").css("background-color", "#f9f9f9");
+        $('#checkAll,#CheckAll').click(function () {
+             $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+        $('.edit_link').parent().parent().prev().children().each(function (index){
+          var $edit_link = $(this).prop('value');
+          $('.edit_link:eq(' + index + ')').prop('href', '/article/edit' + $edit_link);
+        });
+        $('.delete_link').parent().parent().prev().children().each(function (index){
+          var $delete_link = $(this).prop('value');
+          $('.delete_link:eq(' + index + ')').prop('href', '/category/delete/' + $delete_link);
+        });
+        $('.sub_edit_link').parent().next().each(function (index){
+          var $sub_edit_link = $(this).text();
+          $('.sub_edit_link:eq(' + index + ')').prop('href', '/subedit/' + $sub_edit_link);
+        });
+        $('.sub_delete_link').parent().next().each(function (index){
+          var $sub_edit_link = $(this).text();
+          $('.sub_delete_link:eq(' + index + ')').prop('href', '/subdelete/' + $sub_edit_link);
+        });
+      });
+  </script>

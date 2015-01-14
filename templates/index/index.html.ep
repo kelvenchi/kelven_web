@@ -1,0 +1,472 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare(qq{select name from Category;});
+% $sth->execute;
+% my $pcategory = $sth->fetchall_arrayref();
+% $sth->finish;
+% my ($t1,$t2,$t3,$t4,$t5,$t6);
+% $t1 = $dbh->prepare(qq{select * from IndexCover});
+% $t2 = $dbh->prepare(qq{select * from IndexOutline});
+% $t3 = $dbh->prepare(qq{select * from IndexConcept});
+% $t4 = $dbh->prepare(qq{select * from IndexDev});
+% $t5 = $dbh->prepare(qq{select * from IndexIntroduce});
+% $t6 = $dbh->prepare(qq{select * from IndexQDev});
+% $t1->execute;
+% $t2->execute;
+% $t3->execute;
+% $t4->execute;
+% $t5->execute;
+% $t6->execute;
+% my (@r1,@r2,@r3,@r4,@r5,@r6);
+% @r1 = $t1->fetchrow_array();
+% @r2 = $t2->fetchrow_array();
+% @r3 = $t3->fetchrow_array();
+% @r4 = $t4->fetchrow_array();
+% @r5 = $t5->fetchrow_array();
+% @r6 = $t6->fetchrow_array();
+% $t1->finish;
+% $t2->finish;
+% $t3->finish;
+% $t4->finish;
+% $t5->finish;
+% $t6->finish;
+% $dbh->disconnect;
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>首页管理</h3>
+      <div class="Index">
+        <div>
+          <div class="Title" id="TableTitle">
+            <div class="container" style="margin-left:0;padding-left:0">
+              <!-- <div class="page-header"> -->
+              <!--   <h4>封面</h4> -->
+              <!-- </div> -->
+              <!-- <div class="row"> -->
+              <!--   <div class="form-group"> -->
+              <!--     <label for="index_title" class="col-sm-1 control-label" style="position:relative;top:7px;">公司名称</label> -->
+              <!--     <div class="col-sm-5"> -->
+              <!--       <input type="text" class="form-control" id="index_title" name="company_name" placeholder="公司名称" value="<%=decode 'utf8', $r1[0]%>"> -->
+              <!--     </div> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <!-- <div class="row" style="margin-top:10px"> -->
+              <!--   <div class="form-group"> -->
+              <!--     <label for="index_propa" class="col-sm-1 control-label" style="position:relative;top:7px;">宣传标语</label> -->
+              <!--     <div class="col-sm-5"> -->
+              <!--       <input type="text" class="form-control" id="index_propa" name = "propagation" placeholder="宣传标语" value="<%= decode 'utf8', $r1[1] %>"> -->
+              <!--       %= input_tag modify => "更新", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm1()"; -->
+              <!--     </div> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <!-- <div class="page-header"> -->
+              <!--   <h4>概要</h4> -->
+              <!-- </div> -->
+              <!-- <div class="row" style="margin-top:10px"> -->
+              <!--   <div class="form-group"> -->
+              <!--     <label for="pdt_category" class="col-sm-1 control-label" style="position:relative;top:7px;">产品目录</label> -->
+              <!--     <div class="col-sm-5"> -->
+              <!--       <select class="form-control" id="pdt_category" name="pcategory"> -->
+              <!--         <option value="<%= decode 'utf8', $r2[0] %>"><%= decode 'utf8', $r2[0] %></option> -->
+              <!--       % for (@{$pcategory}) { -->
+              <!--           <option value="<%=decode 'utf8', $_->[0] %>"><%= decode 'utf8', $_->[0]%></option> -->
+              <!--       % } -->
+              <!--       </select> -->
+              <!--     </div> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <!-- <div class="row" style="margin-top:10px"> -->
+              <!--   <div class="form-group"> -->
+              <!--     <label for="introduction" class="col-sm-1 control-label" style="position:relative;top:7px;">公司介绍</label> -->
+              <!--     <div class="col-sm-5"> -->
+              <!--       <input type="text" class="form-control" id="introduction" name = "introduction" placeholder="公司介绍（URL地址)" value="<%= decode 'utf8', $r2[1] %>"> -->
+              <!--       %= input_tag modify => "更新", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm2()"; -->
+              <!--     </div> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <div class="page-header">
+                <h4>理念</h4>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="title1" class="col-sm-1 control-label" style="position:relative;top:7px;">标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="title1" name = "title1" placeholder="标题" value="<%= decode 'utf8', $r3[0] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="subtitle1" class="col-sm-1 control-label" style="position:relative;top:7px;">副标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="subtitle1" name = "subtitle1" placeholder="副标题" value="<%= decode 'utf8', $r3[1] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image1" class="col-sm-1 control-label" style="position:relative;top:7px;">左侧图片</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image1" name = "image1" placeholder="图片地址" value="<%= decode 'utf8', $r3[2] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image2" class="col-sm-1 control-label" style="position:relative;top:7px;">中间图片</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image2" name = "image2" placeholder="图片地址" value="<%= decode 'utf8', $r3[3]%>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image3" class="col-sm-1 control-label" style="position:relative;top:7px;">右侧图片</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image3" name = "image3" placeholder="图片地址" value="<%= decode 'utf8', $r3[4]%>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image3" class="col-sm-1 control-label" style="position:relative;top:7px;">图片一</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image4" name = "image4" placeholder="图片地址" value="<%= decode 'utf8', $r3[5]%>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image3" class="col-sm-1 control-label" style="position:relative;top:7px;">图片二</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image5" name = "image5" placeholder="图片地址" value="<%= decode 'utf8', $r3[6]%>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image3" class="col-sm-1 control-label" style="position:relative;top:7px;">图片三</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image6" name = "image6" placeholder="图片地址" value="<%= decode 'utf8', $r3[7]%>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image3" class="col-sm-1 control-label" style="position:relative;top:7px;">图片三</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image7" name = "image7" placeholder="图片地址" value="<%= decode 'utf8', $r3[8]%>">
+                    %= input_tag modify => "更新", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm3()";
+                  </div>
+                </div>
+              </div>
+              <div class="page-header">
+                <h4>加工设备</h4>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="title2" class="col-sm-1 control-label" style="position:relative;top:7px;">标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="title2" name = "title2" placeholder="标题" value="<%= decode 'utf8', $r4[0] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="subtitle1" class="col-sm-1 control-label" style="position:relative;top:7px;">副标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="subtitle2" name = "subtitle2" placeholder="副标题" value="<%= decode 'utf8', $r4[1] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="image-dev" class="col-sm-1 control-label" style="position:relative;top:7px;">设备图片</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="image-dev" name = "image-dev" placeholder="图片地址" value="<%= decode 'utf8', $r4[2] %>">
+                    %= input_tag modify => "更新", type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm7()";
+                  </div>
+                </div>
+              </div>
+              <div class="page-header">
+                <h4>产品介绍</h4>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="title3" class="col-sm-1 control-label" style="position:relative;top:7px;">标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="title3" name = "title3" placeholder="标题" value="<%= decode 'utf8', $r5[0] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="subtitle3" class="col-sm-1 control-label" style="position:relative;top:7px;">副标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="subtitle3" name = "subtitle3" placeholder="副标题" value="<%= decode 'utf8', $r5[1] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist1" class="col-sm-1 control-label" style="position:relative;top:7px;">产品1</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist1" name = "imglist1" placeholder="图片地址" value="<%= decode 'utf8', $r5[2] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc1" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc1" name = "imglist-desc1" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[3] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist2" class="col-sm-1 control-label" style="position:relative;top:7px;">产品2</label>
+                  <div class="col-sm-5">
+                    <input type="textarka" class="form-control" id="imglist2" name = "imglist2" placeholder="图片地址" value="<%= decode 'utf8', $r5[4] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc2" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc2" name = "imglist-desc2" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[5] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist3" class="col-sm-1 control-label" style="position:relative;top:7px;">产品3</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist3" name = "imglist3" placeholder="图片地址" value = "<%= decode 'utf8', $r5[6] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc3" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc3" name = "imglist-desc3" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[7] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist4" class="col-sm-1 control-label" style="position:relative;top:7px;">产品4</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist4" name = "imglist4" placeholder="图片地址" value = "<%= decode 'utf8', $r5[8] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc4" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc4" name = "imglist-desc4" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[9] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist5" class="col-sm-1 control-label" style="position:relative;top:7px;">产品5</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist5" name = "imglist5" placeholder="图片地址" value = "<%= decode 'utf8', $r5[10] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc5" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc5" name = "imglist-desc5" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[11] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist6" class="col-sm-1 control-label" style="position:relative;top:7px;">产品6</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist6" name = "imglist6" placeholder="图片地址" value = "<%= decode 'utf8', $r5[12] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc6" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc6" name = "imglist-desc6" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[13]%></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist7" class="col-sm-1 control-label" style="position:relative;top:7px;">产品7</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist7" name = "imglist7" placeholder="图片地址" value = "<%= decode 'utf8', $r5[14] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc7" class="col-sm-1 control-label" style="position:relative;top:7px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc7" name = "imglist-desc7" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[15] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist8" class="col-sm-1 control-label" style="position:relative;top:fpx;">产品8</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist8" name = "imglist8" placeholder="图片地址" value="<%= decode 'utf8', $r5[16] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc8" class="col-sm-1 control-label" style="position:relative;top:8px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc8" name = "imglist-desc8" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[17] %></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist9" class="col-sm-1 control-label" style="position:relative;top:fpx;">产品9</label>
+                  <div class="col-sm-5">
+                    <input type="textarea" class="form-control" id="imglist9" name = "imglist9" placeholder="图片地址" value="<%= decode 'utf8', $r5[18] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="imglist-desc9" class="col-sm-1 control-label" style="position:relative;top:8px;">产品介绍</label>
+                  <div class="col-sm-5">
+                    <textarea class="form-control" id="imglist-desc9" name = "imglist-desc9" placeholder="产品介绍" style="height:200px"><%= decode 'utf8', $r5[19] %></textarea>
+                    %= input_tag modify => '更新', type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm5()";
+                  </div>
+                </div>
+              </div>
+              <div class="page-header">
+                <h4>质检设备</h4>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="title4" class="col-sm-1 control-label" style="position:relative;top:7px;">标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="title4" name = "title4" placeholder="标题" value="<%= decode 'utf8', $r6[0] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="subtitle4" class="col-sm-1 control-label" style="position:relative;top:7px;">副标题</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="subtitle4" name = "subtitle4" placeholder="副标题" value="<%= decode 'utf8', $r6[1] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="dev1" class="col-sm-1 control-label" style="position:relative;top:7px;">质检设备1</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="dev1" name = "dev1" placeholder="图片地址" value="<%= decode 'utf8', $r6[2] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="dev2" class="col-sm-1 control-label" style="position:relative;top:7px;">质检设备2</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="dev2" name = "dev2" placeholder="图片地址" value="<%= decode 'utf8', $r6[3] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="dev3" class="col-sm-1 control-label" style="position:relative;top:7px;">质检设备3</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="dev3" name = "dev3" placeholder="图片地址" value="<%= decode 'utf8', $r6[4] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="dev4" class="col-sm-1 control-label" style="position:relative;top:7px;">质检设备4</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="dev4" name = "dev4" placeholder="图片地址" value="<%= decode 'utf8', $r6[5] %>">
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px">
+                <div class="form-group">
+                  <label for="dev5" class="col-sm-1 control-label" style="position:relative;top:7px;">质检设备5</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="dev5" name = "dev5" placeholder="图片地址" value="<%= decode 'utf8', $r6[6] %>">
+                    %= input_tag modify => '更新', type => 'submit', class => "btn btn-default", style => 'width:60px;margin-top:10px;', onclick => "sm6()";
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="text" name="delete_id" value="" id="delete_id" style="display:none;"/>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script>
+    function sm1() {
+      document.getElementById("big-form").action='/index/cover';
+      document.getElementById("big-form").submit();
+    }
+    function sm2() {
+      document.getElementById("big-form").action='/index/outline';
+      document.getElementById("big-form").submit();
+    }
+    function sm3() {
+      document.getElementById("big-form").action='/index/concept';
+      document.getElementById("big-form").submit();
+    }
+    function sm7() {
+      document.getElementById("big-form").action='/index/dev';
+      document.getElementById("big-form").submit();
+    }
+    function sm5() {
+      document.getElementById("big-form").action='/index/introduce';
+      document.getElementById("big-form").submit();
+    }
+    function sm6() {
+      document.getElementById("big-form").action='/index/qdev';
+      document.getElementById("big-form").submit();
+    }
+    function sm4() {
+      document.getElementById("big-form").action='/articlemgmt/logout';
+      document.getElementById("big-form").submit();
+    }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+      });
+  </script>

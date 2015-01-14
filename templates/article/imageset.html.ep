@@ -1,0 +1,295 @@
+% use DBI;
+% use Encode;
+% use utf8;
+% my $l_num = 8;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare(qq{SELECT DISTINCT name FROM Category;});
+% $sth->execute;
+% my $nav = $sth->fetchall_arrayref();
+% $sth->finish;
+% my $sth3 = $dbh->prepare(qq{select name from Subcategory where belong_to in (select id from Category where name = "$category");});
+% $sth3->execute();
+% my $menu = $sth3->fetchall_arrayref();
+% $sth3->finish;
+% for (@{$nav}) {
+%   $_->[0] = decode 'utf8', $_->[0];
+% }
+% my @navlink;
+% for (@{$nav}) {
+%   my $sth2 = $dbh->prepare(qq{select url, id from Articles where category = "$_->[0]" limit 1});
+%   $sth2->execute;
+%   my @temp = $sth2->fetchrow_array();
+%   push @navlink, $temp[0];
+%   $sth2->finish;
+% }
+% my $sql;
+% my $ca = decode "utf8", $category;
+% my $su = decode 'utf8', $subcategory;
+% if ($subcategory && $subcategory ne $title) {
+%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su" and article_i = $id order by description limit ?, ?;};
+% } elsif ($subcategory && $subcategory eq $title) {
+%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su" order by description limit ?, ?;};
+% } else {
+%   $sql = qq{select * from Image where category = "$ca" order by description limit ?, ?;};
+% }
+% my $countsql;
+% if ($subcategory) {
+%   $countsql = qq{select count(*) from Image where category = "$ca" and subcategory = "$su" and article_i = $id;};
+% } elsif ($subcategory and $subcategory = $title) {
+%   $countsql = qq{select count(*) from Image where category = "$ca" and subcategory = "$su";};
+% } else {
+%   $countsql = qq{select count(*) from Image where category = "$ca";};
+% }
+% my $sth6 = $dbh->prepare("$sql");
+% $sth6->execute($page * $l_num, $l_num);
+% my $imglist = $sth6->fetchall_arrayref();
+% $sth6->finish;
+% my $sth7 = $dbh->prepare("$countsql");
+% $sth7->execute();
+% my @l_count = $sth7->fetchrow_array();
+% $sth7->finish;
+% my $l_count = $l_count[0];
+% my $pdts = $dbh->prepare(qq{select * from Recommend});
+% $pdts->execute();
+% my @prodts = $pdts->fetchrow_array();
+% $pdts->finish();
+% my @top;
+% for (@prodts) {
+%   my $sth = $dbh->prepare(qq{select * from Image where url = "$_"}) if $_;
+%   $sth->execute() if defined $sth && $sth;
+%   my @tmp = $sth->fetchrow_array() if defined $sth && $sth;
+%   $sth->finish() if defined $sth && $sth;
+%   push @top, [@tmp] if $_;
+% }
+% $dbh->disconnect;
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>湖北明磊传动轴有限公司</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media querie -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body style="padding-top: 30px;">
+
+  <!-- navigation bar -->
+  <div id="nav" class="navbar navbar-default navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#ml-navbar-1">
+          <span class="sr-only">Toggle Navgation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/index">
+          <img id="logo-img" src="../imgsrc/logo2.png">
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="ml-navbar">
+        <ul id="menu" class="nav navbar-nav">
+        % my $i = 0;
+        % for (@{$nav}) {
+          <li><a href="<%= $navlink[$i] %>"><%= $_->[0] %></a></li>
+        % $i++;
+        % }
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <label class="sr-only" for="search">产品搜索</label>
+              <input type="text" class="form-control" id="search" placeholder="Search"></input>
+            </div>
+            <button type="submit" class="btn btn-default">搜产品</button>
+          </form>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-1 col-md-2">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="page-header">
+              <h4><%= decode 'utf8', $category %></h4>
+            </div>
+            <div class="panel-group" id="dir">
+            % $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+            % for my $this (@{$menu}) {
+              <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    % my $rand = int(rand(1000));
+                    <a data-toggle="collapse" data-parent="#dir" href="#collapse<%= $rand %>">
+                      <%= decode 'utf8', $this->[0] %>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapse<%= $rand %>" class="panel-collapse collapse">
+                  <div class="list-group">
+                    % my $sth5 = $dbh->prepare(qq{select title, url from Articles where category = "$category" and subcategory = "$this->[0]" and model = 'i';});
+                    % $sth5->execute;
+                    % my $articles = $sth5->fetchall_arrayref();
+                    % $sth5->finish;
+                    % for (@{$articles}) {
+                      <a class="list-group-item" href="<%= decode 'utf8', $_->[1] %>"><%= decode 'utf8', $_->[0]%></a>
+                    % }
+                  </div>
+                </div>
+              </div>
+            % }
+            % $dbh->disconnect;
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="page-header" >
+              <h4>联系方式</h4>
+            </div>
+            <p>公司前台：027-84663613</p>
+            <p>公司传真：027-84623712</p>
+            <p>公司邮箱：hbml@hbml.cn</p>
+            <p>公司网址：www.hbml.cn</p>
+            <p>销售电话：</p>
+            <p>84864936　84633950</p>
+            <p>84468311　84451595</p>
+            <p>84863253　84633906</p>
+            <p>厂　　址：武汉市黄陂区汉口北大道华中企业城特1号</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="page-header">
+          <h4><%=decode 'utf8', $title %></h4>
+        </div>
+        <ol class="breadcrumb">
+          <li><a href="/">首页</a></li>
+          <li><a href="<%= $curl %>"><%= decode 'utf8', $category %></a></li>
+          % if ($surl) {
+            <li><a href="<%= $surl %>"><%= decode 'utf8', $subcategory %></a></li>
+          % }
+          <li><a href="#"><%= decode 'utf8', $title %></a></li>
+        </ol>
+          % if ($id == 108) {
+          %   $imglist = [map {$_} @top, @{$imglist}]
+          % }
+          % my $mode = 4;
+          % my $count = @{$imglist};
+          % my $image_rows = int($count / ($mode + 0.01)) + 1;
+          % my $remain = $count % $mode;
+          % my @nums;
+          % for my $this (1 .. $image_rows) {
+            % my $amount;
+            % if ($this * $mode <= $count) {
+              % $amount = $mode;
+            % } else {
+              % $amount = $remain;
+            % }
+            %= tag div => (class => 'row') => begin
+              % for (1 .. $amount) {
+                %= tag div => (class => "col-md-3") => begin
+                  %= tag a => (class => 'thumbnail', href => "$imglist->[($this - 1) * $mode + $_ -1][3]") => begin
+                    %= tag img => (src => "$imglist->[($this - 1) * $mode + $_ -1][1]", style => "height:150px;width:150px") => '';
+                  % end;
+                  %= tag div => (class => 'caption') => begin
+                      <p style="text-align:center"><%= decode "utf8", $imglist->[($this - 1) * $mode + $_ -1][2] %></p>
+                  % end;
+                % end;
+              % }
+            % end;
+          % }
+          <ul class="pagination pagination-sm pull-right">
+          <li><a href="/article/<%= $id . "?page=0"%>">&laquo;</a></li>
+          % my $maxpage = int ($l_count / ($l_num + 0.01));
+          % if ($page != 0 && $page -1 != 0 && $page != $maxpage && $page + 1 != $maxpage && $maxpage > 2) {
+              <li><a href="">...</a></li>
+          %   for ($page -1 .. $page + 1) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+              <li><a href="">...</a></li>
+          % } elsif($page == 0 && $maxpage > 2) {
+          %   for ($page .. $page + 2) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+              <li><a href="">...</a></li>
+          % } elsif ($page-1 == 0 && $maxpage > 2) {
+          %   for ($page-1 .. $page + 1) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+              <li><a href="">...</a></li>
+          % } elsif ($page + 1 == $maxpage && $maxpage > 2) {
+              <li><a href="">...</a></li>
+          %   for ($page -1 .. $maxpage) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+          % } elsif ($page == $maxpage && $maxpage > 2) {
+              <li><a href="">...</a></li>
+          %   for ($page-2 .. $page) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+          % } elsif ($maxpage <=2) {
+          %   for (0..$maxpage) {
+          %     my $active = '';
+          %     $active = 'active' if $page == $_;
+                <li class="<%=$active%>"><a href="/article/<%=$id . "?page= $_" %>"><%=$_ + 1%></a></li>
+          %   }
+          % }
+          <li><a href='/article/<%= $id . "?page=$maxpage"%>'>&raquo;</a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-address">
+        <p>工厂地址：武汉市汉口北华中企业城</p>
+        <p>电话：027-84663613 传真：027-84623712 技术支持：<a href="mailto:kelven.chi@163.com?subject=FromHBML">祥子@湖北</a></p>
+        <p>© 2014 湖北明磊传动轴有限公司 <a href='http://www.miitbeian.gov.cn/'>鄂ICP备09025197号-2</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Includes Script -->
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('.panel-title a').each(function(index){
+        $(this).hover(function(){
+          $(this).click();
+        }, function(){
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

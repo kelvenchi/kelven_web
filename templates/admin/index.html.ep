@@ -1,0 +1,187 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare("SELECT * FROM Articles ORDER BY id DESC;");
+% my $cou = $dbh->prepare("SELECT COUNT(*) FROM Articles;");
+% my $sth2 = $dbh->prepare("SELECT DISTINCT date FROM Articles ORDER BY id DESC;");
+% my $sth3 = $dbh->prepare("SELECT DISTINCT name FROM Category;");
+% my $fst = $dbh->prepare("SELECT id FROM Articles limit 1;");
+%# my $page = session 'page';
+% $sth->execute();
+% $cou->execute();
+% $sth2->execute();
+% $sth3->execute();
+% $fst->execute();
+% my $row = $sth->fetchall_arrayref();
+% my $count = $cou->fetchrow_arrayref();
+% my $row2 = $sth2->fetchall_arrayref();
+% my $row3 = $sth3->fetchall_arrayref();
+% my @first = $fst->fetchrow_array();
+% $sth->finish;
+% $cou->finish;
+% $sth2->finish;
+% $sth3->finish;
+% $fst->finish;
+% $dbh->disconnect;
+%# session page => $page;
+% session count => $count->[0];
+% session first => $first[0];
+% session rows => [map {$_->[0]} @{$row}];
+% for (@{$row}, @{$row3}) {
+%   for my $this (@{$_}) {
+%     $this = decode 'utf8', $this;
+%   }
+% }
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>文章管理<a href="/admin/add" class="operator">新建</a></h3>
+      <div class="Index">
+        <div>
+          <div class="Statistics">
+            <div id="sitem">全部<span class="badge"><%= $count->[0] %></span></div>
+            <div id="fitem">
+              <input name="search-content" type="text" id="search" placeholder="Search" id="SearchBox" class="form-control"></input>
+              <input type="submit" value="搜索" class="btn btn-default"></input>
+            </div>
+            <div class="ml-clear"></div>
+          </div>
+          <div class="Title" id="TableTitle">
+            <div id="Submit">
+              <select id="item-apply" name="operation" class="form-control">
+                <option value="all">批量操作</option>
+                <option value="republish">重新发布</option>
+                <option value="remove">删除</option>
+              </select>
+              <input type="submit" value="应用" class="btn btn-default" onclick="sm1()"></input>
+            </div>
+            <div>
+              <select id="item-filter" name="date" class="form-control">
+                <option value="">全部日期</option>
+                % for (@{$row2}) {
+                <option value="<%= $_->[0] %>">
+                % my @d2 = split /-/, $_->[0];
+                <%= $d2[0] . '年' . $d2[1] . '月' . $d2[2] . '日'%>
+                </option>
+                % }
+              </select>
+              <select id="item-filter" name="category" class="form-control">
+                <option value="">主分类</option>
+                % for (@{$row3}) {
+                <option value="<%= $_->[0] %>" class="category-item"><%= $_->[0] %></option>
+                % }
+              </select>
+              <div id="subcategory"></div>
+              <input type="submit" value="筛选" class="btn btn-default" onclick="sm2()"></input>
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+          <div class="Table" id="TableBody">
+            <table>
+              <thead>
+                <tr id="t_title">
+                  <th class="column-check"><input id="checkAll" name="head-check" type="checkbox"></input></th>
+                  <th class="column-title">标题</th>
+                  <th class="column-author">文章地址</th>
+                  <th class="column-date">日期</th>
+                  <th class="column-content">分类目录</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr id="t_foot">
+                  <th class="column-check"><input id="CheckAll" name="foot-check" type="checkbox"></input></th>
+                  <th class="column-title">标题</th>
+                  <th class="column-author">文章地址</th>
+                  <th class="column-date">日期</th>
+                  <th class="column-content">分类目录</th>
+                </tr>
+              </tfoot>
+              <tbody>
+                % for my $this (@{$row}) {
+                <tr>
+                  <td class="check-cell">
+                    <input type="checkbox" name="table_item<%= $this->[0] %>" value="<%= $this->[0] %>"></input>
+                  </td>
+                  <td class="check-cell">
+                    <a href="#"><strong><%= $this->[1] %></strong></a>
+                    <p>
+                    % $this->[2] =~ s/<[^>]+>//gs;
+                    % $this->[2] =~ s/&nbsp//gs;
+                    % if (length($this->[2]) > 50 ) {
+                      <%== substr($this->[2], 0, 50) . " " . substr($this->[2], 51, 30) . "  [...]" %>
+                    % } else {
+                      <%== $this->[2] %>
+                    % }
+                    </p>
+                    <small><a href="" class="edit_link">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="" class="delete_link">删除</a></small>
+                  </td>
+                  <td><%= $this->[7] %></td>
+                  <td>
+                    % my @words = split /-/, $this->[3];
+                    <%= $words[0] . '年' . $words[1] . '月' . $words[2] . '日' %>
+                    %
+                  </td>
+                  <td><%= $this->[4] %></td>
+                </tr>
+                % }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="text" name="delete_id" value="" id="delete_id" style="display:none;"></input>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script>
+    function sm1() {
+      document.getElementById("big-form").action='/articlemgmt/operate';
+      document.getElementById("big-form").submit();
+    }
+    function sm2() {
+      document.getElementById("big-form").action='/articlemgmt/filtrate';
+      document.getElementById("big-form").submit();
+    }
+    function sm3() {
+      document.getElementById("big-form").action='/articlemgmt/search';
+      document.getElementById("big-form").submit();
+    }
+    function sm4() {
+      document.getElementById("big-form").action='/articlemgmt/logout';
+      document.getElementById("big-form").submit();
+    }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+        $("tbody tr:odd").css("background-color", "#f9f9f9");
+        $("#checkAll,#CheckAll").click(function () {
+             $('input:checkbox').not(this).prop('checked', this.checked);
+         });
+        var $edit_link;
+        var $delete_link;
+        $('.edit_link').parent().parent().prev().children().each(function (index){
+          $edit_link = $(this).prop('value');
+          $('.edit_link:eq(' + index + ')').prop('href', '/article/edit/' + $edit_link);
+        });
+        $('.delete_link').parent().parent().prev().children().each(function (index){
+          $delete_link = $(this).prop('value');
+          $('.delete_link:eq(' + index + ')').prop('href', '/article/delete/' + $delete_link);
+        });
+        var content = $('#for_extract').html();
+        $('#extract').text(content);
+      });
+  </script>

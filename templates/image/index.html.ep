@@ -1,0 +1,218 @@
+% layout "admin";
+% use DBI;
+% use utf8;
+% use Encode;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $images = $dbh->prepare("SELECT * FROM Image;");
+% my $cou = $dbh->prepare("SELECT COUNT(*) FROM Image;");
+% my $category = $dbh->prepare("SELECT * FROM Category;");
+% $images->execute();
+% $cou->execute();
+% $category->execute();
+% my $row = $images->fetchall_arrayref();
+% my $count = $cou->fetchrow_arrayref();
+% my $pri = $category->fetchall_arrayref();
+% $images->finish;
+% $cou->finish;
+% $category->finish;
+% $dbh->disconnect;
+% for (@{$row}) {
+%   for my $this (@{$_}) {
+%     $this = decode('utf8', $this);
+%   }
+% }
+% for (@{$pri}) {
+%   for my $this (@{$_}) {
+%     $this = decode('utf8', $this);
+%   }
+% }
+
+  <div id="AdminContent">
+    <div class="AdminBody">
+      <h3>图片管理</h3>
+      <div class="Index">
+        <div>
+          <div class="Statistics">
+            <div id="sitem">全部图片<span class="badge"><%= $count->[0] %></span></div>
+            <div id="fitem">
+              <input name="search-content" type="text" id="search" placeholder="Search" id="SearchBox" class="form-control"></input>
+              <input type="submit" value="搜索" class="btn btn-default"></input>
+            </div>
+            <div class="ml-clear"></div>
+          </div>
+          <div class="Title" id="TableTitle">
+            <div>
+              <!-- <input type="submit" value="删除" class="btn btn-default" onclick="sm1()"> -->
+              %= file_field 'fileupload', class => 'addPrew';
+              <select id="item-filter" name="category" class="form-control" style="width:10%;float:left;margin-right:20px;">
+                <option value="" style="padding: 5px 15px 5px 15px;">图片分类</option>
+                % for (@{$pri}) {
+                <option value="<%= $_->[1] %>" style="padding: 5px 0px 5px 15px;"><%= $_->[1] %></option>
+                % }
+              </select>
+              <select id="subcategory" class="form-control"  name="subcategory" style="width:10%;float:left;margin-right:20px;">
+                <option value="" style="padding: 5px 15px 5px 15px;">二级分类</option>
+              </select>
+              <select id="article" class="form-control"  name="article" style="width:10%;float:left;margin-right:20px;">
+                <option value="" style="padding: 5px 15px 5px 15px;">所属文章</option>
+              </select>
+              %= input_tag description => "", class=> "form-control", placeholder => "图片描述", style => "width:20%";
+              %= input_tag linked_to => '', class => "form-control", placeholder => "链接到", style => "width:10%";
+              %= submit_button '上传', onclick => "sm2()", class=> "btn btn-default";
+            </div>
+          </div>
+          <div class="ml-clear"></div>
+          <div class="Table" id="TableBody">
+            % my $mode = 6;
+            % my $image_rows = int($count->[0] / ($mode + 0.01)) + 1;
+            % my $remain = $count->[0] % $mode;
+            % my @nums;
+            %= tag div => (class => 'container') => begin
+              % for my $this (1 .. $image_rows) {
+                % my $amount;
+                % if ($this * $mode <= $count->[0]) {
+                  % $amount = $mode;
+                % } else {
+                  % $amount = $remain;
+                % }
+                %= tag div => (class => 'row') => begin
+                  % for (1 .. $amount) {
+                    %= tag div => (class => "col-md-2") => begin
+                      %= tag div => (class => 'thumbnail') => begin
+                      %= tag img => (src => "$row->[($this - 1) * $mode + $_ -1][1]", style => "height:150px") => '';
+                        %= tag div => (class => 'caption') => begin
+                            %= tag div => begin
+                              %= tag a => (class => 'showpicdesc', href => '') => '图片说明';
+                            %= end;
+                            %= tag p => (class => 'picdesc', style => 'display:none') => $row->[($this - 1) * $mode + $_ -1][2];
+                            %= tag a => (class => 'showpicurl', href => '') => '图片地址';
+                            %= tag p => (class => 'picurl', style => 'display: none') => $row->[($this - 1) * $mode + $_ -1][1];
+                            %= tag div => begin
+                              %= tag a => (href => $row->[($this - 1) * $mode + $_ -1][3]) => '查看链接文章';
+                            %= end;
+                            %  my $num = $row->[($this - 1) * $mode + $_ -1][0];
+                            %= input_tag "desc-$num" => $row->[($this - 1) * $mode + $_ -1][2], type => "text", class => "form-control", style => "margin-top:5px", placeholder => '图片说明';
+                            %= input_tag "weburl-$num" => $row->[($this -1) * $mode + $_ -1][3], type => "text", class => "form-control", style => "margin-top:5px", placeholder => '图片外链';
+                            %= input_tag edit => '更新', type => "submit", class => 'btn btn-default edit_link' , style => "width:48%;margin-top:10px;", onclick => "sm5()";
+                            %= input_tag delete => '删除', type => "submit", class => 'btn btn-default delete_link' , style => "width:48%;margin-top:10px;", onclick => "sm6()";
+                            %= input_tag container => "$num", type => 'text', style => 'display:none;';
+                        % end;
+                      % end;
+                    % end;
+                  % }
+                % end;
+              % }
+            % end;
+            %= input_tag num => '', type => 'text', style => 'display:none;', id => 'denum';
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="text" name="delete_id" value="" id="delete_id" style="display:none;"/>
+
+  <script src="/bootstrap/js/jquery.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/bootstrap/upload/jquery.ui.widget.js"></script>
+  <script src="/bootstrap/upload/jquery.iframe-transport.js"></script>
+  <script src="/bootstrap/upload/jquery.fileupload.js"></script>
+
+  <script>
+    function sm1() {
+      document.getElementById("big-form").action='/image/del';
+      document.getElementById("big-form").submit();
+    }
+    function sm2() {
+      document.getElementById("big-form").action='/image/upload';
+      document.getElementById("big-form").submit();
+    }
+    function sm3() {
+      document.getElementById("big-form").action='/image/searsh';
+      document.getElementById("big-form").submit();
+    }
+    function sm4() {
+      document.getElementById("big-form").action='/articlemgmt/logout';
+      document.getElementById("big-form").submit();
+    }
+    function sm5() {
+      document.getElementById("big-form").action='/image/update';
+      document.getElementById("big-form").submit();
+    }
+    function sm6() {
+      document.getElementById("big-form").action='/image/delete';
+      document.getElementById("big-form").submit();
+    }
+  </script>
+
+  <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var totalx = document.documentElement.clientWidth;
+        var totaly = document.documentElement.clientHeight;
+        var sidebarWidth = totalx - 130;
+        var sidebarHeight = totaly - 38;
+        document.getElementById("AdminContent").style.width=sidebarWidth +"px";
+        document.getElementById("AdminContent").style.minHeight=sidebarHeight + "px";
+        $('.edit_link').each(function (index){
+          $(this).click(function(){
+            var num = $(this).next().next().prop('value');
+            $('#denum').prop('value', num);
+          });
+        });
+        $('.delete_link').each(function (index){
+          $(this).click(function(){
+            var num = $(this).next().prop('value');
+            $('#denum').prop('value', num);
+          });
+        });
+        $('.showpicurl').each(function(index){
+          $(this).click(function(e){
+            e.preventDefault();
+            $(this).next().toggle();
+          });
+        });
+        $('.showpicdesc').each(function(index){
+          $(this).click(function(e){
+            e.preventDefault();
+            $(this).parent().next().toggle();
+          });
+        });
+        $('#item-filter').change(function(){
+          var id = $(this).val();
+          $.ajax({
+            type: "POST",
+            url:  "/ajax/subc",
+            data: {name: id},
+            dataType: "json",
+            success: function(data){
+              var option = '<option value="">二级分类</option>';
+              $.each(data, function(index, entry){
+                option += '<option style="padding: 5px 15px 5px 15px;" value="' + entry.name + '">' + entry.name + '</option>';
+              });
+              $('#subcategory').empty();
+              $('#subcategory').html(option);
+              $('#article').html('<option value="">所属文章</option>');
+            }
+          });
+        });
+        $('#subcategory').change(function(){
+          var cid = $('#item-filter').val();
+          var id = $(this).val();
+          $.ajax({
+            type: "POST",
+            url:  "/ajax/suba",
+            data: {name: id, pri: cid},
+            dataType: "json",
+            success: function(data){
+              var option = '<option value="">所属文章</option>';
+              $.each(data, function(index, entry){
+                option += '<option style="padding: 5px 15px 5px 15px;" value="' + entry.id + '">' + entry.name + '</option>';
+              });
+              $('#article').empty();
+              $('#article').html(option);
+            }
+          });
+        });
+      });
+  </script>

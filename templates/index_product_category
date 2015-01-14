@@ -1,0 +1,60 @@
+  <div class="container" id="index_container1">
+    <div class="row">
+      <div class="col-sm-12 col-md-2">
+        <!-- ProductList Begin -->
+        <div class="panel-group" id="dir">
+          <div class="page-header">
+            <h4>产品目录</h4>
+          </div>
+            % $dbh = DBI->connect("DBI:mysql:database=hbml;host=localhost","root","2020240", {RaiseError => 1, AutoCommit => 0});
+            % for my $this (@{$menu}) {
+              <div class="panel panel-success">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    % my $rand = int(rand(1000));
+                    <a data-toggle="collapse" data-parent="#dir" href="#collapse<%= $rand %>">
+                      <%= decode 'utf8', $this->[0] %>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapse<%= $rand %>" class="panel-collapse collapse">
+                  <div class="list-group">
+                    % my $sth5 = $dbh->prepare(qq{select title, url from Articles where category = "$pcategory" and subcategory = "$this->[0]" and model = 'i';});
+                    % $sth5->execute;
+                    % my $articles = $sth5->fetchall_arrayref();
+                    % $sth5->finish;
+                    % for (@{$articles}) {
+                      <a class="list-group-item" href="<%= decode 'utf8', $_->[1] %>"><%= decode 'utf8', $_->[0]%></a>
+                    % }
+                  </div>
+                </div>
+              </div>
+            % }
+            % $dbh->disconnect;
+        </div>
+        <!-- ProductList end -->
+      </div>
+      <!-- company infomation -->
+      <div class="col-sm-12 col-md-8" id="company_introduce">
+        % $content[0] =~ s{(<h.+>).*(</h.>)}{<p>&nbsp;</p>}gs;
+        <%== decode 'utf8',$content[0] %>
+        <!-- <%= $r2[1] %> -->
+      </div>
+      <div class="col-sm-12 col-md-2" id="index_contact">
+        <div class="page-header">
+          <h4>联系方式</h4>
+        </div>
+        <p id="index_saler"><span class="glyphicon glyphicon-user" id="index_saler_icon"></span> 售前 / 售后咨询：</p>
+        <p>　　前台：<a href="tencent://message/?uin=2851332311">小徐</a></p>
+        <p>　　销售：<a href="tencent://message/?uin=2851332314">小敖</a>　<a href="tencent://message/?uin=2851332312">小玲</a></p>
+        <p>　　　　　<a href="tencent://message/?uin=2851332316">小瑾</a>　<a href="tencent://message/?uin=2851332319">小曼</a></p>
+        <p id="index_tel"><span class="glyphicon glyphicon-phone-alt" id="index_tel_icon"></span> 电话：027-84668613</p>
+        <p id="index_fax"><span class="glyphicon glyphicon-phone-alt" id="index_fax_icon"></span> 传真：027-84623712</p>
+        <p id="index_addr"><span class="glyphicon glyphicon-envelope" id="index_addr_icon"></span> 邮箱：hbml@hbml.cn</p>
+        <p id="index_addr"><span class="glyphicon glyphicon-home" id="index_addr_icon"></span> 地址：武汉市汉口北大道华中企业城</p>
+      </div>
+      <!-- company infomations end -->
+    </div>
+  </div>
+
+

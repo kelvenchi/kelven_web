@@ -1,0 +1,181 @@
+% use DBI;
+% use Encode;
+% use utf8;
+% use lib '../../';
+% use CMSConfig;
+% my $dbh = DBI->connect("DBI:mysql:database=$CMSConfig::database;host=$CMSConfig::host","$CMSConfig::user","$CMSConfig::pass", {RaiseError => 1, AutoCommit => 0});
+% my $sth = $dbh->prepare(qq{SELECT DISTINCT name FROM Category;});
+% $sth->execute;
+% my $nav = $sth->fetchall_arrayref();
+% $sth->finish;
+% my $sth3 = $dbh->prepare(qq{select title,url from Articles where category = "$category"  and model='l' or category = "$category" and model = 'i' or category = "$category" and model = 's' or category = "$category" and model = 'c' and subcategory not in (select name from Subcategory);});
+% $sth3->execute();
+% my $titles = $sth3->fetchall_arrayref();
+% $sth3->finish;
+% my $sth4 = $dbh->prepare(qq{select url, description from Image where category = "$category" and subcategory = "$title";});
+% $sth4->execute;
+% my $imglist = $sth4->fetchall_arrayref();
+% $sth4->finish;
+% for (@{$nav}) {
+%   $_->[0] = decode 'utf8', $_->[0];
+% }
+% my @navlink;
+% for (@{$nav}) {
+%   my $sth2 = $dbh->prepare(qq{select url, id from Articles where category = "$_->[0]" limit 1});
+%   $sth2->execute;
+%   my @temp = $sth2->fetchrow_array();
+%   push @navlink, $temp[0];
+%   $sth2->finish;
+% }
+% $dbh->disconnect;
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>湖北明磊传动轴有限公司</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media querie -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body style="padding-top: 30px;">
+
+  <!-- navigation bar -->
+  <div id="nav" class="navbar navbar-default navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#ml-navbar-1">
+          <span class="sr-only">Toggle Navgation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/index">
+          <img id="logo-img" src="../imgsrc/logo2.png">
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="ml-navbar">
+        <ul id="menu" class="nav navbar-nav">
+        % my $i = 0;
+        % for (@{$nav}) {
+          <li><a href="<%= $navlink[$i] %>"><%= $_->[0] %></a></li>
+        % $i++;
+        % }
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <label class="sr-only" for="search">产品搜索</label>
+              <input type="text" class="form-control" id="search" placeholder="Search"></input>
+            </div>
+            <button type="submit" class="btn btn-default">搜产品</button>
+          </form>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-1 col-md-2">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="page-header">
+              <h4><%= decode 'utf8', $category %></h4>
+            </div>
+            <div class="list-group" id="menu-detail">
+              % my $active;
+              % for (@{$titles}) {
+              %   if ($_->[0] eq $title) {
+              %     $active = 'active';
+              %   } else {
+              %     $active = '';
+              %   }
+                  <a href="<%= $_->[1] %>" class="list-group-item <%= $active %>"><%= decode 'utf8', $_->[0] %></a>
+              % }
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="page-header" >
+              <h4>联系方式</h4>
+            </div>
+            <p>公司前台：027-84663613</p>
+            <p>公司传真：027-84623712</p>
+            <p>公司邮箱：hbml@hbml.cn</p>
+            <p>公司网址：www.hbml.cn</p>
+            <p>销售电话：</p>
+            <p>84864936　84633950</p>
+            <p>84468311　84451595</p>
+            <p>84863253　84633906</p>
+            <p>厂　　址：武汉市黄陂区汉口北大道华中企业城特1号</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="page-header">
+          <h4><%=decode 'utf8', $title %></h4>
+        </div>
+        <ol class="breadcrumb" style="width: 100%">
+          <li><a href="/">首页</a></li>
+          <li><a href="<%= $curl %>"><%= decode 'utf8', $category %></a></li>
+          <li><a href="#"><%= decode 'utf8', $title %></a></li>
+        </ol>
+        % my $mode = 3;
+        % my $count = @{$imglist};
+        % my $image_rows = int($count / ($mode + 0.01)) + 1;
+        % my $remain = $count % $mode;
+        % my @nums;
+          % for my $this (1 .. $image_rows) {
+            % my $amount;
+            % if ($this * $mode <= $count) {
+              % $amount = $mode;
+            % } else {
+              % $amount = $remain;
+            % }
+            %= tag div => (class => 'row') => begin
+              % for (1 .. $amount) {
+                %= tag div => (class => "col-md-4") => begin
+                  %= tag div => (class => 'thumbnail') => begin
+                    %= tag img => (src => "$imglist->[($this - 1) * $mode + $_ -1][0]", style => "height:200px;width:200px") => '';
+                  % end;
+                  %= tag div => (class => 'caption') => begin
+                      %= tag div => begin
+                      <p style="text-align:center"><%= decode "utf8", $imglist->[($this - 1) * $mode + $_ -1][1] %></p>
+                      %= end;
+                  % end;
+                % end;
+              % }
+            % end;
+          % }
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-address">
+        <p>工厂地址：武汉市汉口北华中企业城</p>
+        <p>电话：027-84663613 传真：027-84623712 技术支持：<a href="mailto:kelven.chi@163.com?subject=FromHBML">祥子@湖北</a></p>
+        <p>© 2014 湖北明磊传动轴有限公司 <a href='http://www.miitbeian.gov.cn/'>鄂ICP备09025197号-2</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Includes Script -->
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
