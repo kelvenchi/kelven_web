@@ -25,14 +25,22 @@
 %   $sth2->finish;
 % }
 % my $sql;
+% my $sqla;
 % my $ca = decode "utf8", $category;
 % my $su = decode 'utf8', $subcategory;
 % if ($subcategory && $subcategory ne $title) {
-%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su" and article_i = $id order by description limit ?, ?;};
+%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su" and article_i = $id;};
 % } elsif ($subcategory && $subcategory eq $title) {
-%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su" order by description limit ?, ?;};
+%   $sql = qq{select * from Image where category = "$ca" and subcategory = "$su";};
 % } else {
-%   $sql = qq{select * from Image where category = "$ca" order by description limit ?, ?;};
+%   $sql = qq{select * from Image where category = "$ca";};
+% }
+% if ($subcategory && $subcategory ne $title) {
+%   $sqla = qq{select * from Image where category = "$ca" and subcategory = "$su" and article_i = $id order by -description limit ?, ?;};
+% } elsif ($subcategory && $subcategory eq $title) {
+%   $sqla = qq{select * from Image where category = "$ca" and subcategory = "$su" order by -description limit ?, ?;};
+% } else {
+%   $sqla = qq{select * from Image where category = "$ca" order by -description limit ?, ?;};
 % }
 % my $countsql;
 % if ($subcategory) {
@@ -43,8 +51,8 @@
 %   $countsql = qq{select count(*) from Image where category = "$ca";};
 % }
 % my $sth6 = $dbh->prepare("$sql");
-% $sth6->execute($page * $l_num, $l_num);
-% my $imglist = $sth6->fetchall_arrayref();
+% $sth6->execute();
+% my $imglista = $sth6->fetchall_arrayref();
 % $sth6->finish;
 % my $sth7 = $dbh->prepare("$countsql");
 % $sth7->execute();
@@ -55,6 +63,10 @@
 % $pdts->execute();
 % my @prodts = $pdts->fetchrow_array();
 % $pdts->finish();
+% my $sth8 = $dbh->prepare("$sqla");
+% $sth8->execute($page * $l_num, $l_num);
+% my $imglistb = $sth8->fetchall_arrayref();
+% $sth8->finish;
 % my @top;
 % for (@prodts) {
 %   my $sth = $dbh->prepare(qq{select * from Image where url = "$_"}) if $_;
@@ -63,6 +75,10 @@
 %   $sth->finish() if defined $sth && $sth;
 %   push @top, [@tmp] if $_;
 % }
+% my @imglista = sort {$a->[0] gt $b->[0]} @{$imglista};
+% my $tt = @{$imglistb} - 1;
+% @imglista = @imglista[$page * $l_num .. $page * $l_num + $l_num - ($l_num - $tt)];
+% my $imglist = \@imglista;
 % $dbh->disconnect;
 
 <!DOCTYPE html>
